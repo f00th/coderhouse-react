@@ -1,9 +1,8 @@
-import { NavLink } from "react-router-dom"
+import { Link } from "react-router-dom"
 
 const Item = ({id, name, img, price}) => {
     return (
-        <div>{name} {img} price: {price} <NavLink to={`/item/${id}`}><button>Detalle</button></NavLink></div>
-        
+        <div>{name} {img} price: {price} <Link to={`/item/${id}`}><button>Detalle</button></Link></div>  
     )
 }
 

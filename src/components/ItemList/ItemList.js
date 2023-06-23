@@ -1,11 +1,13 @@
 import Item from '../Item/Item';
 
 const ItemList = ({products}) => {
-    return (
-        <div>
-            {products.map(prod => <Item key={prod.id} {...prod} />)}
-        </div>
-    )
+    if (products.length > 0) {
+        return (
+            <div>
+                {products.map(prod => <Item key={prod.id} {...prod} />)}
+            </div>
+        )
+    }
 }
 
 export default ItemList
