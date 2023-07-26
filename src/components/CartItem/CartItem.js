@@ -1,6 +1,6 @@
-const CartItem = ({id, name, img, price}) => {
+const CartItem = ({id, name, img, price, quantity}) => {
     return (
-        <div>{name} {img} price: {price}</div>
+        <div>item: {name} {img} quantity: {quantity} price: {price} subtotal: {quantity*price}</div>
     )
 }
 

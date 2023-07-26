@@ -15,7 +15,7 @@ const products = [
         category: 'mesa',
         img: null,
         stock: 25,
-        description: 'mesa 12 desc'
+        description: 'mesa desc'
     },
     {
         id: '3',

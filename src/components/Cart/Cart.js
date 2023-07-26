@@ -4,13 +4,13 @@ import CartItem from "../CartItem/CartItem";
 import { NavLink } from "react-router-dom";
 
 const Cart = () => {
-    const { cart, clearCart, totalQuantity, total} = useContext(CartContext)
+    const { cart, clearCart, totalQuantity, sum} = useContext(CartContext)
 
     if(totalQuantity === 0 ) {
         return (
             <div>
                 <h1>El carrito no contiene items</h1>
-                <NavLink to='/'>Productos</NavLink>
+                <button><NavLink to='/'>Productos</NavLink></button>
             </div>
         )
     }
@@ -18,9 +18,9 @@ const Cart = () => {
     return (
         <div>
             { cart.map(p => <CartItem key={p.id} {...p}/>) }
-            <h3>Total: ${total}</h3> 
+            <h3>Total: ${sum}</h3> 
             <button onClick={() => clearCart()}>Limpiar carrito</button>
-            <NavLink to='/checkout'>Finalizar compra</NavLink>
+            <button><NavLink to='/checkout'>Finalizar compra</NavLink></button>
         </div>
     )
 }
