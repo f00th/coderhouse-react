@@ -6,16 +6,15 @@ import { db } from "../../services/firebase/firebaseConfig"
 
 const ItemListContainer = ({greeting}) => {
     const [products, setProducts] = useState([])
-    const categoryId = useParams()
+    const { categoryId } = useParams()
     
     
     useEffect(() => {
         const productsCollection = collection(db, "products")
-        console.log(categoryId)
+        
         
         if (categoryId) {
-            const queryFilter = query(productsCollection, where('category', '==', categoryId))
-            console.log(queryFilter)
+            const queryFilter = query(productsCollection, where('category', '==', categoryId));
             getDocs(queryFilter).then((snapshot) => {
                 setProducts(
                     snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }))
