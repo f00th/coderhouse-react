@@ -29,11 +29,10 @@ const formHandler = (event) => {
     }
     const total = sum
     const order = {
-        items: cart.map((products) => ({
-            id: products.id,
-            name: products.name,
-            price: products.price,
-            quantity: products.quantity
+        items: cart.map((product) => ({
+            name: product.name,
+            price: product.price,
+            quantity: product.quantity
         })),
         total: total,
         fecha: new Date(),
@@ -42,58 +41,56 @@ const formHandler = (event) => {
         phone,
         email,}
 
-        Promise.all(
-            order.items.map (async (productOrder) => {
-                const db = getFirestore()
-                const productRef = doc (db, 'products', productOrder.id)
-
-                const productDoc = await getDoc(productRef)
-                const actualStock = productDoc.data().stock
-                
-                updateDoc(productRef, {
-                    stock: actualStock - productOrder.quantity
-                })
-            })
-        )
-        .then(() => {
+    Promise.all(
+        order.items.map (async (productOrder) => {
             const db = getFirestore()
-            addDoc(collection(db, 'orders', order))
-            .then((docRef) => {
-                setOrderId(docRef.id)
-                removeItem()
+            const productRef = doc (db, 'products', productOrder.id)
+            const productDoc = await getDoc(productRef)
+            const actualStock = productDoc.data().stock
+            
+            updateDoc(productRef, {
+                stock: actualStock - productOrder.quantity
             })
-            .catch((error) => {
-                console.log('Error en la creacion de orden', error)
-                setError('Error en orden')
-            })
-            .catch((error) => {
-                console.log('No se puede actualizar el stock', error)
-                setError('No se actualizo el stock')
-            })
-        
-            setName('')
-            setLastName('')
-            setPhone('')
-            setEmail('')
-            setEmailConfirmation('')
-            setMessage('')
         })
-
+    )
+    .then(() => {
+        const db = getFirestore()
+        addDoc(collection(db, 'orders', order))
+        .then((docRef) => {
+            setOrderId(docRef.id)
+            removeItem()
+        })
+        .catch((error) => {
+            console.log('Error en la creacion de orden', error)
+            setError('Error en orden')
+        })
+        .catch((error) => {
+            console.log('No se puede actualizar el stock', error)
+            setError('No se actualizo el stock')
+        })
+    
+        setName('')
+        setLastName('')
+        setPhone('')
+        setEmail('')
+        setEmailConfirmation('')
+        setMessage('')
+    })
         
     }
 
-
+    
 return(
     <div>
         <h2>Completa tus datos para confirmar la compra:</h2>
         <form onSubmit={formHandler}>
             {cart.map((products) =>
-                <div key={products.item.id}>
+                <div key={products.id}>
                 <p>
                     {''}
-                    {products.item.name} x {products.quantity}
+                    {products.name} x {products.quantity}
                 </p>
-                <p>$ {products.item.price}</p>
+                <p>$ {sum}</p>
                 </div>
             )}
             <div>
