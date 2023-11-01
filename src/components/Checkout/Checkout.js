@@ -15,7 +15,7 @@ export const Checkout = () => {
     const [message, setMessage] = useState('')
 
 
-const { cart, removeItem, sum } = useContext(CartContext)
+const { cart, clearCart, sum } = useContext(CartContext)
 
 const formHandler = (event) => {
     event.preventDefault()
@@ -41,42 +41,19 @@ const formHandler = (event) => {
         phone,
         email,}
 
-    Promise.all(
-        order.items.map (async (productOrder) => {
-            const db = getFirestore()
-            const productRef = doc (db, 'products', productOrder.id)
-            const productDoc = await getDoc(productRef)
-            const actualStock = productDoc.data().stock
-            
-            updateDoc(productRef, {
-                stock: actualStock - productOrder.quantity
-            })
-        })
-    )
-    .then(() => {
         const db = getFirestore()
-        addDoc(collection(db, 'orders', order))
-        .then((docRef) => {
-            setOrderId(docRef.id)
-            removeItem()
-        })
-        .catch((error) => {
-            console.log('Error en la creacion de orden', error)
-            setError('Error en orden')
-        })
-        .catch((error) => {
-            console.log('No se puede actualizar el stock', error)
-            setError('No se actualizo el stock')
-        })
-    
+        const orderRef = collection(db, 'orders')
+        const orderAdded = addDoc(orderRef, order)
+        setOrderId(orderAdded.id)
+        clearCart()
+
         setName('')
         setLastName('')
         setPhone('')
         setEmail('')
         setEmailConfirmation('')
         setMessage('')
-    })
-        
+        console.log(orderId)
     }
 
     
@@ -90,9 +67,10 @@ return(
                     {''}
                     {products.name} x {products.quantity}
                 </p>
-                <p>$ {sum}</p>
+                <p>$ {products.price}</p>
                 </div>
             )}
+            <div>Total: {sum}</div>
             <div>
                 <label>Nombre</label>
                 <input type='text' value={name} onChange={(e) => setName(e.target.value)}></input>
@@ -114,10 +92,7 @@ return(
                 <input type='email' value={emailConfirmation} onChange={(e) => setEmailConfirmation(e.target.value)}></input>
             </div>
             
-            {error && <p>{error}</p>}
-            {orderId && (
-                <p>Gracias por su compra! <br/> {orderId}</p>
-            )}
+            <div>Order ID: {orderId}</div>
 
             <div><button type='submit'>Finalizar compra</button></div>
         </form>
