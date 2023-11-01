@@ -41,21 +41,22 @@ const formHandler = (event) => {
         phone,
         email,}
 
-        const db = getFirestore()
-        const orderRef = collection(db, 'orders')
-        const orderAdded = addDoc(orderRef, order)
-        setOrderId(orderAdded.id)
-        clearCart()
 
+        const db = getFirestore()
+        addDoc(collection(db, 'orders'),order)
+        .then((docRef) => {
+            setOrderId(docRef.id)
+            clearCart()
+        })
+    
         setName('')
         setLastName('')
         setPhone('')
         setEmail('')
         setEmailConfirmation('')
         setMessage('')
-        console.log(orderId)
-    }
 
+    }
     
 return(
     <div>
@@ -70,7 +71,6 @@ return(
                 <p>$ {products.price}</p>
                 </div>
             )}
-            <div>Total: {sum}</div>
             <div>
                 <label>Nombre</label>
                 <input type='text' value={name} onChange={(e) => setName(e.target.value)}></input>
@@ -92,7 +92,10 @@ return(
                 <input type='email' value={emailConfirmation} onChange={(e) => setEmailConfirmation(e.target.value)}></input>
             </div>
             
-            <div>Order ID: {orderId}</div>
+            {error && <p>{error}</p>}
+            {orderId && (
+                <p>Gracias por su compra! <br/> {orderId}</p>
+            )}
 
             <div><button type='submit'>Finalizar compra</button></div>
         </form>
